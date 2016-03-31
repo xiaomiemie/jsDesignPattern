@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <title></title>
+</head>
+<body>
+<script type="text/javascript">
+//原型
+  var myobj = {
+    str:'mystring',
+    num:1,
+    myarr:[30,{arrgo:'i am go'}],
+    myobj:{
+      innerobj:{
+        test:25
+      },
+      innerstr:'myobjinnerstr'
+    },
+    fun2:function(){
+      
+    }
+  }
+   //浅拷贝 
+  function clone(obj){
+    var ret={},k;
+    for(k in obj){
+      ret[k]=obj[k]
+    }
+    return ret;
+  }
+  var res = clone(myobj);
+  // console.log(res)
+  // res.myobj.innerstr='cloneinner'
+  // console.log(res)
+  // console.log(myobj)//发现也被修改了。
+  /////////////////////////////////
+  //深拷贝
+  function clone2(obj){
+    var ret,k,b;
+    if((b=(obj instanceof Array)) || obj instanceof Object){
+      ret=b?[]:{};
+      for(k in obj){
+        ret[k]=clone2(obj[k]);
+      }
+    }else{
+      ret=obj
+    }
+    return ret;
+  }
+  var res2= clone2(myobj);
+console.log(myobj.fun2);
+res2.myobj.innerstr='cloneinner';
+console.log(res2);
+//es6/////////////////////////////////////////////
+function res4(){};
+ res4.prototype=Object.create(myobj, {
+  // foo会成为所创建对象的数据属性
+  foo: { writable:true, configurable:true, value: "hello" },
+  // bar会成为所创建对象的访问器属性
+  bar: {
+    configurable: false,
+    get: function() { return 10 },
+    set: function(value) { console.log("Setting `o.bar` to", value) }
+}})
+var res5=new res4();
+var res6=new res4();
+console.log(res5.foo='r');
+console.log(res6.foo);
+console.log(res5.bar=100);
+console.log(res6.bar)
+</script>
+</body>
+</html>
